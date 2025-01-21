@@ -1,3 +1,47 @@
 import { MODULE_ID } from "./main.js";
+import {getSetting, setSetting} from "./settings.js";
 
-export function initConfig() { }
+export function initConfig() {
+    if(!game.user.isGM) return;
+    Hooks.on("renderSettingsConfig", (app, html) => {
+
+        const element = html[0] ?? html;
+
+        const settingsFormGroups = element.querySelectorAll('.form-group[data-setting-id]');
+        console.log(settingsFormGroups);
+
+        settingsFormGroups.forEach(formGroup => {
+            const settingId = formGroup.dataset.settingId;
+            if (!settingId) return;
+            const setting = game.settings.settings.get(settingId);
+            if (!setting) return;
+            const select = document.createElement("select");
+            select.style.maxWidth = "3rem";
+            select.style.marginRight = "0.3rem";
+            const worldOption = document.createElement("option");
+            worldOption.value = "world";
+            worldOption.text = "🌎";
+            worldOption.selected = setting.scope === "world";
+            select.appendChild(worldOption);
+            const clientOption = document.createElement("option");
+            clientOption.value = "client";
+            clientOption.text = "👤";
+            clientOption.selected = setting.scope === "client";
+            select.appendChild(clientOption);
+            const label = formGroup.querySelector("label");
+            formGroup.prepend(select);
+            select.addEventListener("change", event => {
+                const value = event.target.value;
+                const configuration = getSetting("configuration");
+                configuration[settingId.replace(".", "")] = value;
+                setSetting("configuration", configuration);
+                ui.notifications.info(game.i18n.localize("settings-world-client-swap.notification").replace("{setting}", label.textContent).replace("{value}", value));
+            });
+        });
+
+
+
+
+
+    });
+}
