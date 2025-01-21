@@ -1,7 +1,10 @@
 import { initConfig } from "./config.js";
+import {showWelcome} from "./lib/welcome.js";
 import { getSetting, registerSettings } from "./settings.js";
 
 export const MODULE_ID = "settings-world-client-swap";
+
+export const ALTERED_SETTING_IDS = [];
 
 Hooks.on("init", () => {
     registerSettings();
@@ -9,6 +12,7 @@ Hooks.on("init", () => {
 
 Hooks.on("ready", () => {
     initConfig();
+    showWelcome();
 });
 
 let registered = false;
@@ -30,8 +34,9 @@ ClientSettings.prototype.register = function (...args) {
     const [namespace, key, data] = args;
     if (namespace === MODULE_ID) return registerSetting.call(this, ...args);
     const configuration = getSetting("configuration");
-    if (configuration[namespace + key]) {
+    if (configuration[namespace + key] && configuration[namespace + key] !== data.scope) {
         data.scope = configuration[namespace + key];
+        ALTERED_SETTING_IDS.push(namespace + "." + key);
     }
     return registerSetting.call(this, ...args);
 };

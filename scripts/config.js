@@ -1,4 +1,4 @@
-import { MODULE_ID } from "./main.js";
+import { MODULE_ID, ALTERED_SETTING_IDS } from "./main.js";
 import {getSetting, setSetting} from "./settings.js";
 
 export function initConfig() {
@@ -15,9 +15,11 @@ export function initConfig() {
             if (!settingId) return;
             const setting = game.settings.settings.get(settingId);
             if (!setting) return;
+            const altered = ALTERED_SETTING_IDS.includes(settingId);
             const select = document.createElement("select");
             select.style.maxWidth = "3rem";
             select.style.marginRight = "0.3rem";
+            if(altered) select.style.border = "2px dotted var(--color-shadow-primary)";
             const worldOption = document.createElement("option");
             worldOption.value = "world";
             worldOption.text = "🌎";
