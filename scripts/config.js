@@ -1,14 +1,14 @@
 import { MODULE_ID, ALTERED_SETTING_IDS } from "./main.js";
 import {getSetting, setSetting} from "./settings.js";
 
+const ALLOW_WORLD_TO_CLIENT = false;
+
 export function initConfig() {
     if(!game.user.isGM) return;
     Hooks.on("renderSettingsConfig", (app, html) => {
-
         const element = html[0] ?? html;
 
         const settingsFormGroups = element.querySelectorAll('.form-group[data-setting-id]');
-        console.log(settingsFormGroups);
 
         settingsFormGroups.forEach(formGroup => {
             const settingId = formGroup.dataset.settingId;
@@ -16,6 +16,15 @@ export function initConfig() {
             const setting = game.settings.settings.get(settingId);
             if (!setting) return;
             const altered = ALTERED_SETTING_IDS.includes(settingId);
+            const originalScope = altered ? (setting.scope === "world" ? "client" : "world") : setting.scope;
+            if (originalScope === "world" && !ALLOW_WORLD_TO_CLIENT) {
+                const worldIcon = document.createElement("label");
+                worldIcon.innerText = "🌎";
+                worldIcon.style.marginRight = "0.3rem";
+                worldIcon.style.maxWidth = "1rem";
+                formGroup.prepend(worldIcon);
+                return;
+            }
             const select = document.createElement("select");
             select.style.maxWidth = "3rem";
             select.style.marginRight = "0.3rem";

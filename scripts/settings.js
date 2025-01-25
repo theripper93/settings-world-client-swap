@@ -4,7 +4,8 @@ const SETTING_CACHE = {};
 const DEFAULT_CACHE = false;
 
 export function registerSettings() {
-    const settings = {};
+    const settings = {
+    };
 
     registerSettingsArray(settings);
 }

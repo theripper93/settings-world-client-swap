@@ -1,6 +1,6 @@
 {
-  "title": "Settings Swap",
-  "description": "Change world settings to client settings or client settings to world settings",
+  "title": "Settings - Client to World",
+  "description": "Change client settings into world settings.",
   "id": "settings-world-client-swap",
   "version": "1.0",
   "authors": [
