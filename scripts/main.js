@@ -11,6 +11,10 @@ Hooks.on("init", () => {
 });
 
 Hooks.on("ready", () => {
+    if (game.modules.get("theripper-premium-hub")?.active) {
+        ui.notifications.warn("The features of 'Settings - Client to World' have been migrated to the TheRipper Module HUB, please uninstall this module.");
+        return;
+    }
     initConfig();
     showWelcome();
 });
